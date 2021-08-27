@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+@import 'app/theme/style';
+@import 'styles/themes';
+@import 'styles/custom';
+@import 'styles/grid';
+@import 'styles/helpers';
+@import 'styles/plugins';
+
+.mat-form-field {
+  line-height: inherit;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@media print {
+  html,
+  body {
+    height: max-content;
+    overflow-y: visible !important;
+  }
+}
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow-y: visible !important;
+  }
+}

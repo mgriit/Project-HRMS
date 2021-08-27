@@ -1,0 +1,106 @@
+<mat-card>
+  <form name="form" #f="ngForm"  fxLayout="row" fxLayoutAlign="start center" >
+    <mat-form-field fxFlex>
+      <mtx-select [items]="customerBuffer"
+        [virtualScroll]="true"
+        [loading]="loading"
+        name="customer"
+        bindLabel="name"
+        bindValue="id"
+        [(ngModel)]="id"
+        placeholder="Select a customer"
+        [typeahead]="input$"
+        (scrollToEnd)="fetchMore(select.ngSelect.searchTerm)"
+        #select>
+        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+            <span [ngOptionHighlight]="search">{{item.name}}</span>
+        </ng-template>
+      </mtx-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="20" fxFlexOffset="2">
+      <input matInput [(ngModel)]="from" name="from" [matDatepicker]="pickerFrom" placeholder="From">
+      <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="20" fxFlexOffset="2">
+      <input matInput [(ngModel)]="to" name="to" [matDatepicker]="pickerTo" placeholder="To">
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+
+    <button fxFlexOffset=".5" type="submit" style="margin-bottom: 10px;" aria-label="from" mat-raised-button (click)="search(f)">
+      <mat-icon>search</mat-icon>
+    </button>
+    <div fxFlex></div>
+    <button [disabled]="dataSource.data.length < 1" printSectionId="mytodosItemsId" style="margin-bottom: 10px;" ngxPrint [useExistingCss]="true" mat-raised-button><mat-icon>print</mat-icon>Print</button>
+  </form>
+  <div id="mytodosItemsId" *ngIf="dataSource.data.length > 0">
+    <p style="text-align: center;">
+      <img src="assets/images/dmc_logo.jpg" height="50"/>
+      <br><b>Dream Masroom Center</b>
+      <br/>Sales Report
+    </p>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-full">
+
+      <ng-container matColumnDef="sl">
+        <th mat-header-cell  *matHeaderCellDef> SL </th>
+        <td mat-cell  *matCellDef="let element;let i = index"> {{i+1}} </td>
+        <td mat-footer-cell *matFooterCellDef>--</td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        <td mat-footer-cell *matFooterCellDef>--</td>
+      </ng-container>
+
+      <ng-container matColumnDef="phone">
+        <th mat-header-cell *matHeaderCellDef> Mobile </th>
+        <td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+        <td mat-footer-cell *matFooterCellDef>--</td>
+      </ng-container>
+
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef> Address </th>
+        <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+        <td mat-footer-cell *matFooterCellDef> -- </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef> Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        <td mat-footer-cell *matFooterCellDef> Total </td>
+      </ng-container>
+
+      <ng-container matColumnDef="btotal">
+        <th mat-header-cell  *matHeaderCellDef> Cost Price </th>
+        <td mat-cell  *matCellDef="let element"> {{element.btotal}} </td>
+        <td mat-footer-cell *matFooterCellDef> {{totalCol.totalBtotal}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th mat-header-cell  *matHeaderCellDef> Price </th>
+        <td mat-cell  *matCellDef="let element"> {{element.total}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{totalCol.totalTotal}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="discount">
+        <th mat-header-cell  *matHeaderCellDef> Discount </th>
+        <td mat-cell  *matCellDef="let element"> {{element.discount}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{totalCol.totalDiscount}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="profit">
+        <th mat-header-cell  *matHeaderCellDef> Profit </th>
+        <td mat-cell *matCellDef="let element"> {{element.profit}} </td>
+        <td mat-footer-cell *matFooterCellDef>{{totalCol.totalProfit}}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+    </table>
+  </div>
+</mat-card>

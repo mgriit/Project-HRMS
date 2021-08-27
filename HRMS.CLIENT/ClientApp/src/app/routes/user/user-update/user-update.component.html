@@ -1,0 +1,103 @@
+<page-header
+  class="bg-blue-600"
+  [nav]="['home', 'menu.user', 'menu.user.create']"
+></page-header>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+<mat-card>
+  <mat-card-title>User Form</mat-card-title>
+
+  <form [formGroup]="userForm" class="form-field-full">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input
+            id="nameInput"
+            matInput
+            placeholder="Name"
+            formControlName="name"
+            autocomplete="name"
+            type="text"
+          />
+          <mat-error *ngIf="userForm.controls['name'].hasError('required')">
+            Name is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput readonly placeholder="Username" formControlName="username" autocomplete="username"/>
+          <mat-error *ngIf="userForm.controls['username'].hasError('required')">
+            Username is
+            <strong>required</strong>
+          </mat-error>
+          <mat-error *ngIf="userForm.controls['username'].hasError('minlength')">
+            Username is
+            <strong>invalid</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Password" formControlName="password" autocomplete="password" type="password"/>
+
+          <mat-error *ngIf="userForm.controls['password'].hasError('minLength')">
+            Password is
+            <strong>invalid</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Confirm Password" formControlName="confirmPassword" type="password"/>
+
+          <mat-error *ngIf="userForm.controls['confirmPassword'].hasError('confirm')">
+            Confirm Password
+            <strong>mismatched</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Designation" formControlName="designation" autocomplete="designation"/>
+          <mat-error *ngIf="userForm.controls['designation'].hasError('required')">
+            Designation is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <mat-label>Choose a role</mat-label>
+
+          <mtx-select [items]="roles" bindLabel="name" bindValue="id"
+            formControlName="role">
+          </mtx-select>
+
+          <mat-error *ngIf="userForm.controls['role'].hasError('required')">
+            Role is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <br>
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="isLoading"
+      type="submit"
+      (click)="onSavePost()"
+    >
+      Save
+    </button>
+  </form>
+</mat-card>

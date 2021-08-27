@@ -1,0 +1,219 @@
+
+<div fxLayout="row" fxLayoutAlign="space-between none">
+  <breadcrumb [nav]="['home','menu.invoice',mode=='edit'?'menu.invoice.edit':'menu.invoice.create']"></breadcrumb> <span *ngIf="mode != 'create'">Invoice # {{invoice.id}}</span>
+</div>
+
+<div class="container" fxLayout="row" fxLayoutAlign="center none">
+  <div fxFlex>
+    <form name="form" #f="ngForm">
+      <mat-card>
+        <div fxLayout="row" fxLayoutAlign="start start">
+
+          <mat-form-field fxFlex>
+            <mtx-select [items]="customerBuffer"
+              [virtualScroll]="true"
+              [loading]="loading"
+              name="customerh"
+              bindLabel="name"
+              bindValue="id"
+              [(ngModel)]="invoice.customerId"
+              (change)="onChangeCustomer($event)"
+              placeholder="Select a customer"
+              [typeahead]="input$"
+              (scrollToEnd)="fetchMore(select.ngSelect.searchTerm)"
+              required
+              #select>
+              <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+                  <span [ngOptionHighlight]="search">{{item.name}}</span>
+              </ng-template>
+            </mtx-select>
+          </mat-form-field>
+
+            <button style="margin-top: 10px;" type="button" (click)="onCreateCustomer()" mat-raised-button color="primary" aria-label="customer" fxFlexOffset=".5">
+              <mat-icon>add_circle_outline</mat-icon>
+            </button>
+
+            <mat-form-field fxFlex="32" fxFlexOffset="2">
+              <input matInput [matDatepicker]="picker" placeholder="Date" name="date" [(ngModel)]="invoice.date">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+            <mat-form-field fxFlex="32">
+                <input matInput placeholder="Mobile" name="mobile" [(ngModel)]="invoice.mobile">
+            </mat-form-field>
+
+            <mat-form-field fxFlex="32" fxFlexOffset="2">
+                <input matInput placeholder="Email" name="email" [(ngModel)]="invoice.email">
+            </mat-form-field>
+
+              <mat-form-field fxFlex="32" fxFlexOffset="2">
+                <input matInput placeholder="Address" name="address" [(ngModel)]="invoice.address">
+              </mat-form-field>
+        </div>
+      </mat-card>
+      <mat-card>
+
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <mtx-select [items]="products"
+            [virtualScroll]="true"
+            bindLabel="name"
+            name="item"
+            [(ngModel)]="item"
+            placeholder="Choose an Item"
+            #selectDropdown
+            (change)="onChangeItem($event,selectDropdown)">
+            <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
+              <span [ngOptionHighlight]="search">{{item.name +' < '+ item.categoryName +' < '+ item.supplierName}}</span>
+            </ng-template>
+          </mtx-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="30" fxFlexOffset="2">
+          <mtx-select [items]="categories"
+            [virtualScroll]="true"
+            bindLabel="name"
+            name="category"
+            placeholder="Choose a category"
+            (change)="onFilterCategory($event)">
+          </mtx-select>
+        </mat-form-field>
+      </div>
+
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z8" class="w-full">
+
+          <ng-container  matColumnDef="name">
+            <mat-header-cell class="th-center" *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell class="th-center" *matCellDef="let element"> {{element.name}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="category">
+            <mat-header-cell class="th-center" *matHeaderCellDef> Category </mat-header-cell>
+            <mat-cell class="th-center" *matCellDef="let element"> {{element.category}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="supplier">
+            <mat-header-cell class="th-center" *matHeaderCellDef> Supplier </mat-header-cell>
+            <mat-cell class="th-center" *matCellDef="let element"> {{element.supplier}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="description">
+            <mat-header-cell class="th-center" *matHeaderCellDef> Description </mat-header-cell>
+            <mat-cell class="th-center" *matCellDef="let element"> {{element.description}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="stock">
+            <mat-header-cell class="th-center w-75" *matHeaderCellDef> Stock </mat-header-cell>
+            <mat-cell class="th-center w-75" *matCellDef="let element"> {{element.stock}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="price">
+            <mat-header-cell class="th-center w-75" *matHeaderCellDef> Price </mat-header-cell>
+            <mat-cell class="th-center w-75" *matCellDef="let element"> {{element.price | currency:'৳'}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <mat-header-cell class="th-center w-200" *matHeaderCellDef> Quantity </mat-header-cell>
+            <mat-cell class="th-center w-200" *matCellDef="let element">
+              <mat-form-field floatLabel="never" appearance="outline" class="no-wrapper">
+              <input matInput name="qty_{{element.id}}" type="number" [(ngModel)]="element.quantity" (ngModelChange)="onQtyChange(element)"  [min]="1" [max]="element.stock" required>
+            </mat-form-field>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="unit">
+            <mat-header-cell class="th-center w-75" *matHeaderCellDef> Unit </mat-header-cell>
+            <mat-cell class="th-center w-75" *matCellDef="let element"> {{element.unit}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="total">
+            <mat-header-cell class="th-center  w-75" *matHeaderCellDef> Total </mat-header-cell>
+            <mat-cell class="th-center w-75" *matCellDef="let element"> {{element.total | currency:'৳'}} </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <mat-header-cell class="th-center w-50" *matHeaderCellDef> Action </mat-header-cell>
+            <mat-cell class="th-center w-50" *matCellDef="let element; let i = index">
+              <button mat-icon-button color="primary" type="button" (click)="onRemoveItem(i)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="noData">
+            <mat-footer-cell class="th-center" *matFooterCellDef [attr.colspan]="displayedColumns.length">
+              No item is placed in invoice
+            </mat-footer-cell>
+          </ng-container>
+
+
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          <mat-footer-row *matFooterRowDef="['noData']" [ngClass]="{'hide':invoice.invoiceItems.length != 0 }"></mat-footer-row>
+        </mat-table>
+
+
+
+
+        <div fxLayout="row" fxLayoutAlign="space-between start" style="margin-top: 15px;">
+          <div fxFlex="30">
+            <div fxLayout="column" fxLayoutAlign="none start">
+              <div fxLayout="row" fxLayoutAlign="start" fxFlexOffset="0">
+                <span fxFlex="3" class="symbol">৳</span>
+                <mat-form-field fxFlex="92" fxFlexOffset="3">
+                  <input matInput [(ngModel)]="invoice.discount" name="discount" placeholder="Discount" type="number">
+                </mat-form-field>
+              </div>
+              <div fxLayout="row" fxLayoutAlign="start" fxFlexOffset="0">
+                <span fxFlex="3" class="symbol">৳</span>
+                <mat-form-field fxFlex="92" fxFlexOffset="3">
+                  <input matInput [(ngModel)]="invoice.paid" name="paid" placeholder="Paid" type="number">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+          <div fxFlex="30" >
+            <div fxLayout="column" fxLayoutAlign="none end">
+              <div class="subTotal">Line Total: <span>{{invoice.lineTotal | currency:'৳'}}</span></div>
+              <div class="subTotal">Discount: <span>{{invoice.discount?invoice.discount:0 | currency:'৳'}}</span></div>
+              <div class="subTotal">Invoice Bill: <span>{{invoice.lineTotal-(invoice.discount? invoice.discount :0) | currency:'৳'}}</span></div>
+              <div class="subTotal">Paid: <span>{{invoice.paid||0 | currency:'৳'}}</span></div>
+              <div class="subTotal">Due: <span>{{invoice.lineTotal-((invoice.discount ? invoice.discount : 0) + (invoice.paid? invoice.paid : 0)) | currency:'৳'}}</span></div>
+            </div>
+          </div>
+        </div>
+      </mat-card>
+
+      <div fxLayout="row" fxLayoutAlign="end">
+          <button mat-button id="pibutton" printSectionId="invoice-POS"
+            [useExistingCss]="true"
+            ngxPrint>
+          </button>
+
+          <button type="button" mat-raised-button color="accent" (click)="setPaid()">
+            <mat-icon>functions_outlined</mat-icon> Set Paid
+          </button>
+
+          <button fxFlexOffset="1" type="submit" [loading]="isLoading" mat-raised-button [color]="(invoice.lineTotal-(invoice.discount||0))==(invoice.paid||0) ? 'primary':'warn'" (click)="saveInvoice(f,true)">
+            <mat-icon>print</mat-icon> Save & Print
+          </button>
+
+          <button fxFlexOffset="1" type="submit" [loading]="isLoading" mat-raised-button [color]="(invoice.lineTotal-(invoice.discount||0))==(invoice.paid||0) ? 'primary':'warn'" (click)="saveInvoice(f,false)">
+            <mat-icon>save</mat-icon> Save Invoice
+          </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+<app-invoice-receipt [receiptData]="invoice" style="display: none;"></app-invoice-receipt>
+
+

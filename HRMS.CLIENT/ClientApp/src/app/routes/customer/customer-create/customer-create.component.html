@@ -1,0 +1,87 @@
+<page-header
+  class="bg-blue-600"
+  [nav]="['home', 'menu.customer', 'menu.customer.create']"
+></page-header>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+<mat-card>
+  <mat-card-title>Customer Form</mat-card-title>
+
+  <form [formGroup]="customerForm" class="form-field-full">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input
+            id="nameInput"
+            matInput
+            placeholder="Name"
+            formControlName="name"
+            autocomplete="name"
+            type="text"
+          />
+          <mat-error *ngIf="customerForm.controls['name'].hasError('required')">
+            Name is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Mobile"
+            formControlName="phone"
+            autocomplete="phone"
+            type="text"
+          />
+          <mat-error *ngIf="customerForm.controls['phone'].hasError('required')">
+            Mobile is
+            <strong>required</strong>
+          </mat-error>
+          <mat-error
+            *ngIf="
+              customerForm.controls['phone'].hasError('pattern') ||
+              customerForm.controls['phone'].hasError('minlength') ||
+              customerForm.controls['phone'].hasError('maxlength')
+            "
+          >
+            Mobile is
+            <strong>incorrect</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Email" formControlName="email" autocomplete="email" />
+          <mat-error *ngIf="customerForm.controls['email'].hasError('email')">
+            Email is
+            <strong>incorrect</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <textarea
+            matInput
+            placeholder="Address"
+            formControlName="address"
+            rows="1"
+            autocomplete="address"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <button
+      mat-raised-button
+      color="primary"
+      [disabled]="isLoading"
+      type="submit"
+      (click)="onSavePost()"
+    >
+      Save
+    </button>
+  </form>
+</mat-card>

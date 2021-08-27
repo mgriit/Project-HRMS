@@ -1,0 +1,105 @@
+<page-header
+  class="bg-blue-600"
+  [nav]="['home', 'menu.product', 'menu.product.create']"
+></page-header>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+<mat-card>
+  <form [formGroup]="productForm" class="form-field-full">
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <mat-label>Choose a category</mat-label>
+
+          <mtx-select [items]="categories" bindLabel="name" bindValue="id"
+            formControlName="category">
+          </mtx-select>
+
+          <mat-error *ngIf="productForm.controls['category'].hasError('required')">
+            Category is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <mat-label>Choose a supplier</mat-label>
+          <mtx-select [items]="suppliers" bindLabel="name" bindValue="id"
+            formControlName="supplier">
+          </mtx-select>
+          <mat-error *ngIf="productForm.controls['supplier'].hasError('required')">
+            Supplier is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="Name"
+            formControlName="name"
+            autocomplete="name"
+            type="text"
+          />
+          <mat-error *ngIf="productForm.controls['name'].hasError('required')">
+            Name is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <textarea
+            matInput
+            placeholder="Description"
+            rows="1"
+            formControlName="description"
+          ></textarea>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="34" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Unit" formControlName="unit" type="text" />
+          <mat-error *ngIf="productForm.controls['unit'].hasError('required')">
+            Unit is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="33" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Cost Price" formControlName="bprice" type="number" />
+          <mat-error *ngIf="productForm.controls['bprice'].hasError('required')">
+            Cost Price is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="33" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input matInput placeholder="Price" formControlName="price" type="number" />
+          <mat-error *ngIf="productForm.controls['price'].hasError('required')">
+            Price is
+            <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="isLoading"
+      (click)="onSavePost()"
+    >
+      Save
+    </button>
+  </form>
+</mat-card>

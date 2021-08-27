@@ -1,0 +1,108 @@
+<page-header class="bg-blue-600" [nav]="['home','menu.invoice','menu.invoice.list']"></page-header>
+
+<form name="form" fxLayout="column" #f="ngForm" fxLayoutAlign="start none">
+   <div fxLayout="row" fxLayoutAlign="start center">
+    <mat-form-field fxFlex>
+      <mat-select [(ngModel)]="query.searchOn" name="sort" placeholder="Search On">
+        <mat-option value="order.id">Invoice No.</mat-option>
+        <mat-option value="customer.name">Customer</mat-option>
+        <mat-option value="customer.phone">Mobile</mat-option>
+        <mat-option value="order.total">Total</mat-option>
+        <mat-option value="order.discount">Discount</mat-option>
+        <mat-option value="order.due">Due</mat-option>
+        <mat-option value="order.paid">Paid</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="32" fxFlexOffset="2">
+      <input matInput [(ngModel)]="query.q" name="q" placeholder="Search">
+    </mat-form-field>
+
+    <mat-form-field fxFlex fxFlexOffset="2">
+      <mat-select [(ngModel)]="query.sortBy" name="sort" placeholder="Sort By">
+        <mat-option value="order.id">Invoice No.</mat-option>
+        <mat-option value="order.date">Invoice Date</mat-option>
+        <mat-option value="customer.name">Customer</mat-option>
+        <mat-option value="customer.phone">Mobile</mat-option>
+        <mat-option value="order.total">Total</mat-option>
+        <mat-option value="order.discount">Discount</mat-option>
+        <mat-option value="order.due">Due</mat-option>
+        <mat-option value="order.paid">Paid</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field fxFlex fxFlexOffset="2">
+      <mat-select [(ngModel)]="query.derection" name="order" placeholder="Order">
+        <mat-option value="desc">DESC</mat-option>
+        <mat-option value="asc">ASC</mat-option>
+      </mat-select>
+    </mat-form-field>
+   </div>
+   <div fxLayout="row" fxLayoutAlign="start center">
+    <mat-form-field fxFlex="20">
+      <input matInput [(ngModel)]="query.from" name="from" [matDatepicker]="pickerFrom" placeholder="From">
+      <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="20" fxFlexOffset="2">
+      <input matInput [(ngModel)]="query.to" name="to" [matDatepicker]="pickerTo" placeholder="To">
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="20" fxFlexOffset="2">
+      <mat-select [(ngModel)]="query.status" name="status" placeholder="Status">
+        <mat-option value='0'>All</mat-option>
+        <mat-option value='1'>Paid</mat-option>
+        <mat-option value='2'>Due</mat-option>
+        <mat-option value='3'>Returned</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <button fxFlexOffset="1" type="submit" mat-raised-button (click)="search(f)">
+      <mat-icon>search</mat-icon>
+    </button>
+    <button fxFlexOffset="1" type="button" mat-raised-button color="warn" (click)="resetSearch()">
+      <mat-icon>restart_alt</mat-icon>
+    </button>
+    <div fxFlex></div>
+    <button mat-raised-button color="primary" routerLink="/category/create"><mat-icon>add</mat-icon> Add New</button>
+   </div>
+</form>
+
+<mtx-grid [data]="listData"
+          [columns]="columns"
+          [length]="total"
+          [loading]="isLoading"
+          [rowStriped]="true"
+          [expandable]="true"
+          [cellSelectable]="false"
+          [expansionTemplate]="expansionTpl"
+          [cellTemplate]="{status: statusTpl}"
+          [pageOnFront]="false"
+          [pageIndex]="query.page"
+          [pageSize]="query.per_page"
+          [pageSizeOptions]="[10,15,20]"
+          (page)="getNextPage($event)"
+          (expansionChange)="onExpand($event)"
+          >
+</mtx-grid>
+
+<ng-template #expansionTpl let-row>
+  <mtx-grid *ngIf="row.items.length > 0" [data]="row.items"
+          [columns]="columns2"
+          [rowStriped]="true"
+          [showPaginator]="false">
+  </mtx-grid>
+</ng-template>
+
+<ng-template #statusTpl let-row let-index="index" let-col="status">
+  <button mat-raised-button (click)="updatePayment(row)"
+    [class]="row.status==1?'bg-green-500 text-white':row.status==2?'bg-orange-500 text-white': 'bg-cyan-500 text-white'">
+    {{row.status==1?'Paid':row.status==2?'Due':'Returned'}}
+  </button>
+</ng-template>
+
+
+
+

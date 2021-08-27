@@ -1,0 +1,27 @@
+<page-header class="bg-blue-600" [nav]="['home','menu.category','menu.category.list']"></page-header>
+
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <mat-form-field floatLabel="never" fxFlex="30" class="m-r-8">
+    <input matInput [(ngModel)]="searchKey" placeholder="Search" autocomplete="off" (keyup)="applyFilter()">
+    <button mat-button matSuffix mat-icon-button aria-label="Clear" *ngIf="searchKey" (click)="onSearchClear()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <button class="m-r-8" mat-raised-button color="primary" routerLink="/category/create"><mat-icon>add</mat-icon> Add New</button>
+</div>
+
+<mtx-grid id="table" [data]="listData"
+          [columns]="columns"
+          [loading]="isLoading"
+          [columnResizable]="false"
+          [rowHover]="true"
+          [rowStriped]="true"
+          [showToolbar]="true"
+          [toolbarTitle]="'Data Grid Toolbar'"
+          [pageOnFront]="true"
+          [showPaginator]="true"
+          [pageSizeOptions]="[5,10,50,100]"
+          [pageIndex]="0"
+          [pageSize]="5">
+</mtx-grid>

@@ -1,0 +1,74 @@
+<mat-card>
+  <form name="form" #f="ngForm"  fxLayout="row" fxLayoutAlign="start center" >
+    <mat-form-field fxFlex="20">
+      <input matInput [(ngModel)]="from" name="from" [matDatepicker]="pickerFrom" placeholder="From">
+      <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+      <mat-datepicker #pickerFrom></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="20" fxFlexOffset="2">
+      <input matInput [(ngModel)]="to" name="to" [matDatepicker]="pickerTo" placeholder="To">
+      <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+      <mat-datepicker #pickerTo></mat-datepicker>
+    </mat-form-field>
+
+    <button fxFlexOffset=".5" type="submit" style="margin-bottom: 10px;" aria-label="from" mat-raised-button (click)="search(f)">
+      <mat-icon>search</mat-icon>
+    </button>
+    <div fxFlex></div>
+    <button [disabled]="dataSource.data.length < 1" printSectionId="mytodosItemsId" style="margin-bottom: 10px;" ngxPrint [useExistingCss]="true" mat-raised-button><mat-icon>print</mat-icon>Print</button>
+  </form>
+  <div id="mytodosItemsId" *ngIf="dataSource.data.length > 0">
+    <p style="text-align: center;">
+      <img src="assets/images/dmc_logo.jpg" height="50"/>
+      <br><b>Dream Masroom Center</b>
+      <br/>Sales Report
+      <br>Date <b>{{from | date:'YYYY-MM-dd'}}</b> to <b>{{to | date:'YYYY-MM-dd'}}</b>
+    </p>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 w-full">
+
+      <ng-container matColumnDef="sl">
+        <th mat-header-cell  *matHeaderCellDef> SL </th>
+        <td mat-cell  *matCellDef="let element;let i = index"> {{i+1}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef> Category </th>
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="supplier">
+        <th mat-header-cell *matHeaderCellDef> Supplier </th>
+        <td mat-cell *matCellDef="let element"> {{element.supplier}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="unit">
+        <th mat-header-cell  *matHeaderCellDef> Unit </th>
+        <td mat-cell  *matCellDef="let element"> {{element.unit}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stockIn">
+        <th mat-header-cell  *matHeaderCellDef> Stock </th>
+        <td mat-cell  *matCellDef="let element"> {{element.stockIn}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stockOut">
+        <th mat-header-cell  *matHeaderCellDef> Sale </th>
+        <td mat-cell  *matCellDef="let element"> {{element.stockOut}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="stock">
+        <th mat-header-cell  *matHeaderCellDef> Remain </th>
+        <td mat-cell *matCellDef="let element"> {{element.stock}} </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+</mat-card>

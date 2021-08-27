@@ -1,0 +1,38 @@
+<form [formGroup]="paymentForm">
+  <h1 mat-dialog-title>Adjust Payment</h1>
+  <mat-dialog-content>
+    <div fxLayout="column" fxFlex="start center">
+      <div fxLayout="row" fxFlex="space-between center">
+        <label fxFlex="25">Line Total: </label> <div fxFlex>{{lineTotal | currency:'৳'}}</div>
+      </div>
+      <div fxLayout="row" fxFlex="space-between center">
+        <label fxFlex="25">Discount: </label> <div fxFlex>{{discount | currency:'৳'}}</div>
+      </div>
+      <div fxLayout="row" fxFlex="space-between center">
+        <label fxFlex="25">Invoice Bill: </label> <div fxFlex>{{invoiceTotal | currency:'৳'}}</div>
+      </div>
+
+      <mat-form-field class="full-width">
+        <input matInput placeholder="Paid" autocomplete="off" formControlName="paid" type="number" />
+      </mat-form-field>
+
+      <div fxLayout="row" fxFlex="space-between center">
+        <label fxFlex="25">Due: </label> <div fxFlex>{{invoiceTotal-paymentForm.get('paid').value| currency:'৳'}}</div>
+      </div>
+
+      <p></p>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [loading]="isLoading"
+      (click)="onSave()"
+    >
+      Save
+    </button>
+    <button mat-raised-button mat-dialog-close color="warn" [disabled]="isLoading">Close</button>
+  </mat-dialog-actions>
+</form>

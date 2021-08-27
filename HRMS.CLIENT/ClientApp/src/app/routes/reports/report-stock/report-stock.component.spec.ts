@@ -1,0 +1,28 @@
+/* tslint:disable:no-unused-variable */
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+
+import { ReportStockComponent } from './report-stock.component';
+
+describe('ReportStockComponent', () => {
+  let component: ReportStockComponent;
+  let fixture: ComponentFixture<ReportStockComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ ReportStockComponent ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(ReportStockComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

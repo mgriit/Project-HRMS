@@ -1,0 +1,43 @@
+<page-header
+  class="bg-blue-600"
+  [nav]="['home', 'menu.category', 'menu.category.create']"
+></page-header>
+
+<mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+<mat-card>
+  <mat-card-title>Category Form</mat-card-title>
+  <form [formGroup]="categoryForm" class="form-field-full">
+
+    <div fxLayout="row wrap" fxLayoutGap="8px grid">
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <input
+            matInput
+            placeholder="{{'Name'}}"
+            formControlName="name"
+            autocomplete="name"
+            type="text"
+          />
+          <mat-error *ngIf="categoryForm.controls['name'].hasError('required')">
+             {{'validations.required' | translate}}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex="50" fxFlex.lt-sm="100">
+        <mat-form-field>
+          <textarea
+            matInput
+            placeholder="Description"
+            formControlName="description"
+            rows="1"
+          ></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <br>
+    <button mat-raised-button color="primary" [disabled]="isLoading" type="submit" (click)="onSavePost()">
+      Save
+    </button>
+  </form>
+</mat-card>
