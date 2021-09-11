@@ -42,20 +42,20 @@ export class AuthService {
   login(username: string, password: string) {
     const authData: AuthData = { username: username, password: password };
     this.http
-      .post<{ token: string; expiresIn: number; userId: string }>(
-        BACKEND_URL + "/login",
+      .post<{ Token: string; Expires: number; UserId: string,UserFullName: string,Username: string,Designation: string }>(
+        BACKEND_URL + "/authenticate",
         authData
       )
       .subscribe(
         response => {
-          const token = response.token;
+          const token = response.Token;
           this.token = token;
           this.username = username;
           if (token) {
-            const expiresInDuration = response.expiresIn;
+            const expiresInDuration = response.Expires;
             this.setAuthTimer(expiresInDuration);
             this.isAuthenticated = true;
-            this.userId = response.userId;
+            this.userId = response.UserId;
             this.authStatusListener.next(true);
             const now = new Date();
             const expirationDate = new Date(

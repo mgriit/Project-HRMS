@@ -11,6 +11,6 @@ namespace HRMS.DLL.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<int> AddAsync(T entity);
         Task<int> UpdateAsync(T entity);
-        Task<int> DeleteAsync(int id);
+        Task<bool> DeleteAsync(int id);
     }
 }

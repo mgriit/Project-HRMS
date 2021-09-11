@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HRMS.MODEL\HRMS.MODEL.csproj" />
+    <ProjectReference Include="..\QueryGenerator\QueryGenerator.csproj" />
   </ItemGroup>
 
 </Project>
